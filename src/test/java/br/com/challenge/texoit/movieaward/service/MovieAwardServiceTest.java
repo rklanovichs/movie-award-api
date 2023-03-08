@@ -54,19 +54,18 @@ class MovieAwardServiceTest {
         assertEquals("Bo Derek", minMaxWinnerAward.getMax().get(0).getProducer());
         assertEquals(1984, minMaxWinnerAward.getMax().get(0).getPreviousWin());
         assertEquals(1990, minMaxWinnerAward.getMax().get(0).getFollowingWin());
-        assertEquals(4, minMaxWinnerAward.getMax().size());
+        assertEquals(3, minMaxWinnerAward.getMax().size());
 
-        assertEquals(9, minMaxWinnerAward.getMax().get(2).getInterval());
-        assertEquals("Buzz Feitshans", minMaxWinnerAward.getMax().get(2).getProducer());
-        assertEquals(1985, minMaxWinnerAward.getMax().get(2).getPreviousWin());
-        assertEquals(1994, minMaxWinnerAward.getMax().get(2).getFollowingWin());
-        assertEquals(4, minMaxWinnerAward.getMax().size());
+        assertEquals(9, minMaxWinnerAward.getMax().get(1).getInterval());
+        assertEquals("Buzz Feitshans", minMaxWinnerAward.getMax().get(1).getProducer());
+        assertEquals(1985, minMaxWinnerAward.getMax().get(1).getPreviousWin());
+        assertEquals(1994, minMaxWinnerAward.getMax().get(1).getFollowingWin());
+        assertEquals(3, minMaxWinnerAward.getMax().size());
 
-        assertEquals(13, minMaxWinnerAward.getMax().get(3).getInterval());
-        assertEquals("Matthew Vaughn", minMaxWinnerAward.getMax().get(3).getProducer());
-        assertEquals(2002, minMaxWinnerAward.getMax().get(3).getPreviousWin());
-        assertEquals(2015, minMaxWinnerAward.getMax().get(3).getFollowingWin());
-        assertEquals(4, minMaxWinnerAward.getMax().size());
+        assertEquals(13, minMaxWinnerAward.getMax().get(2).getInterval());
+        assertEquals("Matthew Vaughn", minMaxWinnerAward.getMax().get(2).getProducer());
+        assertEquals(2002, minMaxWinnerAward.getMax().get(2).getPreviousWin());
+        assertEquals(2015, minMaxWinnerAward.getMax().get(2).getFollowingWin());
+        assertEquals(3, minMaxWinnerAward.getMax().size());
     }
-
 }

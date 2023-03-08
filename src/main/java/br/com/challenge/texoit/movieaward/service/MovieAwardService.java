@@ -47,8 +47,11 @@ public class MovieAwardService {
         Integer yearMin;
         for (int i = 0; i < filterMovieList.size(); i++) {
             for (MovieEntity movieEntity : filterMovieList) {
+                int countAux = i;
                 if (movieEntity.getProducers().contains(filterMovieList.get(i).getProducers())
-                        && !Objects.equals(movieEntity.getId(), filterMovieList.get(i).getId())) {
+                        && !Objects.equals(movieEntity.getId(), filterMovieList.get(i).getId())
+                            && (min.stream().noneMatch(minDTO -> minDTO.getProducer().equalsIgnoreCase(filterMovieList.get(countAux).getProducers()))
+                                && max.stream().noneMatch(maxDTO -> maxDTO.getProducer().equalsIgnoreCase(filterMovieList.get(countAux).getProducers())))) {
                     yearMin = this.getYearMin(filterMovieList.get(i).getYear(), movieEntity.getYear());
                     yearMax = this.getYearMax(filterMovieList.get(i).getYear(), movieEntity.getYear());
                     if (yearMax - yearMin == MINIMAL_INTERVAL) {
@@ -86,15 +89,20 @@ public class MovieAwardService {
 
     private List<MovieEntity> filterWinnerMovieList(final List<MovieEntity> movieList) {
         List<MovieEntity> filterList = new ArrayList<>();
-        IntStream.range(0, movieList.size()).forEach((int i) -> movieList.stream().filter(movieEntity -> movieEntity.getProducers().contains(movieList.get(i).getProducers())
-                && !Objects.equals(movieEntity.getId(), movieList.get(i).getId())).forEachOrdered((MovieEntity movieEntity) -> {
-            if (!filterList.contains(movieList.get(i))) {
-                filterList.add(movieList.get(i));
-            }
-            if (!filterList.contains(movieEntity)) {
-                filterList.add(movieEntity);
-            }
-        }));
+        IntStream.range(0, movieList.size())
+            .forEach((int i) ->
+                movieList.stream()
+                .filter(movieEntity -> movieEntity.getProducers().contains(movieList.get(i).getProducers())
+                    && !Objects.equals(movieEntity.getId(), movieList.get(i).getId()))
+                .forEachOrdered((MovieEntity movieEntity) -> {
+                    if (!filterList.contains(movieList.get(i))) {
+                        filterList.add(movieList.get(i));
+                    }
+                    if (!filterList.contains(movieEntity)) {
+                        filterList.add(movieEntity);
+                    }
+                })
+        );
         return filterList;
     }
 
