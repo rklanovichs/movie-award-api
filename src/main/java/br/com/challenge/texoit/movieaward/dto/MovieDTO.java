@@ -5,9 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-/*public record MovieDTO (Long id, String producers, String studios, String title, Winner winner, Integer year) {
-}*/
-
 @Getter
 @Setter
 @Builder

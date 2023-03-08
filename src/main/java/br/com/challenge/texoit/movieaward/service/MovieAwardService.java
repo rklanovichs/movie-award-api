@@ -110,9 +110,9 @@ public class MovieAwardService {
         }
     }
 
-    public MovieEntity save (final MovieEntity movieEntity) {
+    public void save (final MovieEntity movieEntity) {
         try {
-            return movieRepository.save(movieEntity);
+            movieRepository.save(movieEntity);
         } catch (Exception e) {
             log.error(messageHelper.get(ERROR_MOVIE_SAVE, movieEntity.getTitle(), e));
             throw new BusinessException(INTERNAL_SERVER_ERROR, messageHelper.get(ERROR_MOVIE_SAVE, movieEntity.getTitle(), e));
