@@ -1,0 +1,39 @@
+### GENERAL ###
+server:
+  servlet.context-path: /api/movie-award
+  compression.enabled: true
+  error.include-message: always
+  port: 8090
+
+spring:
+  application.name: challenge-texoit-api
+  cloud.config:
+    fail-fast: true
+    enabled: false
+  main.web-application-type: SERVLET
+  profiles.default: local
+
+  ### DATASOURCE ###
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password:
+    hikari:
+      maximum-pool-size: 10
+      connection-timeout: 20000
+  jpa:
+    defer-datasource-initialization: true
+    hibernate.ddl-auto: update
+    database-platform: org.hibernate.dialect.H2Dialect
+    open-in-view: false
+    show-sql: true
+    properties:
+      jakarta.persistence.sharedCache.mode: UNSPECIFIED
+      hibernate:
+        format_sql: true
+  web:
+    locale: pt_BR
+    locale-resolver: fixed
+
+api.movielist.filePath: src/main/resources/csv/movielist.csv
