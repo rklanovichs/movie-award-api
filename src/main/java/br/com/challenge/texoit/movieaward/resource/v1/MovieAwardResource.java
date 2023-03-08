@@ -1,7 +1,7 @@
 package br.com.challenge.texoit.movieaward.resource.v1;
 
+import br.com.challenge.texoit.movieaward.dto.MovieDTO;
 import br.com.challenge.texoit.movieaward.dto.MovieWinnersDTO;
-import br.com.challenge.texoit.movieaward.entity.MovieEntity;
 import br.com.challenge.texoit.movieaward.service.MovieAwardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +20,7 @@ import static org.springframework.http.HttpStatus.OK;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/v1/movies")
-public class MoviesAwardResource {
+public class MovieAwardResource {
     private final MovieAwardService movieAwardService;
 
     @GetMapping()
@@ -31,7 +31,7 @@ public class MoviesAwardResource {
 
     @GetMapping("/all")
     @ResponseStatus(OK)
-    public List<MovieEntity> findAll() {
+    public List<MovieDTO> findAll() {
         return movieAwardService.findAll();
     }
 }

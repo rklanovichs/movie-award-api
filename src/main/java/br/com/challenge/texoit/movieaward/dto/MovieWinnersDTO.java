@@ -10,6 +10,6 @@ import java.util.List;
 @Setter
 @Builder
 public class MovieWinnersDTO {
-    List<MaxMovieWinnerAwardDTO> max;
     List<MinMovieWinnerAwardDTO> min;
+    List<MaxMovieWinnerAwardDTO> max;
 }

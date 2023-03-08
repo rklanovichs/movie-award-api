@@ -1,20 +1,57 @@
 package br.com.challenge.texoit.movieaward.service;
 
+import br.com.challenge.texoit.movieaward.dto.MovieDTO;
+import br.com.challenge.texoit.movieaward.dto.MovieWinnersDTO;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureTestDatabase
 class MovieAwardServiceTest {
 
+    private static final int ZERO = 0;
     @Autowired
-    private MovieAwardService movieAwardService;
+    private TestRestTemplate testRestTemplate;
 
     @Test
-    void shouldFindAllMovies() {
-        final var moviesList = this.movieAwardService.findAll();
+    void shouldListMaxMinIntervalMovieAward() {
+        MovieWinnersDTO movieWinnersDTO = testRestTemplate.exchange("/v1/movies", HttpMethod.GET, null,
+                new ParameterizedTypeReference<MovieWinnersDTO>() {
+                }).getBody();
+
+        Assertions.assertThat(movieWinnersDTO).isNotNull();
+
+        assertEquals("Joel Silver", movieWinnersDTO.getMin().get(ZERO).getProducer());
+        assertEquals(1, movieWinnersDTO.getMin().get(ZERO).getInterval());
+        assertEquals(1990, movieWinnersDTO.getMin().get(ZERO).getPreviousWin());
+        assertEquals(1991, movieWinnersDTO.getMin().get(ZERO).getFollowingWin());
+        assertEquals(1, movieWinnersDTO.getMin().size());
+
+        assertEquals(13, movieWinnersDTO.getMax().get(ZERO).getInterval());
+        assertEquals("Matthew Vaughn", movieWinnersDTO.getMax().get(ZERO).getProducer());
+        assertEquals(2002, movieWinnersDTO.getMax().get(ZERO).getPreviousWin());
+        assertEquals(2015, movieWinnersDTO.getMax().get(ZERO).getFollowingWin());
+        assertEquals(1, movieWinnersDTO.getMax().size());
+
+    }
+
+    @Test
+    void shouldListAllMoviesSaved() {
+        List<MovieDTO> moviesList = testRestTemplate.exchange("/v1/movies/all", HttpMethod.GET, null,
+                new ParameterizedTypeReference<List<MovieDTO>>() {
+                }).getBody();
+
+        Assertions.assertThat(moviesList).isNotNull();
 
         assertEquals("Allan Carr", moviesList.get(0).getProducers());
         assertEquals("Jerry Weintraub", moviesList.get(1).getProducers());
@@ -38,34 +75,5 @@ class MovieAwardServiceTest {
         assertEquals("David Joseph", moviesList.get(19).getProducers());
         assertEquals("Robert R. Weston", moviesList.get(20).getProducers());
         assertEquals(206, moviesList.size());
-    }
-
-    @Test
-    void shouldFindMaxMinIntervalMovieAward() {
-        final var minMaxWinnerAward = this.movieAwardService.findByWinnerAward();
-
-        assertEquals("Joel Silver", minMaxWinnerAward.getMin().get(0).getProducer());
-        assertEquals(1, minMaxWinnerAward.getMin().get(0).getInterval());
-        assertEquals(1990, minMaxWinnerAward.getMin().get(0).getPreviousWin());
-        assertEquals(1991, minMaxWinnerAward.getMin().get(0).getFollowingWin());
-        assertEquals(1, minMaxWinnerAward.getMin().size());
-
-        assertEquals(6, minMaxWinnerAward.getMax().get(0).getInterval());
-        assertEquals("Bo Derek", minMaxWinnerAward.getMax().get(0).getProducer());
-        assertEquals(1984, minMaxWinnerAward.getMax().get(0).getPreviousWin());
-        assertEquals(1990, minMaxWinnerAward.getMax().get(0).getFollowingWin());
-        assertEquals(3, minMaxWinnerAward.getMax().size());
-
-        assertEquals(9, minMaxWinnerAward.getMax().get(1).getInterval());
-        assertEquals("Buzz Feitshans", minMaxWinnerAward.getMax().get(1).getProducer());
-        assertEquals(1985, minMaxWinnerAward.getMax().get(1).getPreviousWin());
-        assertEquals(1994, minMaxWinnerAward.getMax().get(1).getFollowingWin());
-        assertEquals(3, minMaxWinnerAward.getMax().size());
-
-        assertEquals(13, minMaxWinnerAward.getMax().get(2).getInterval());
-        assertEquals("Matthew Vaughn", minMaxWinnerAward.getMax().get(2).getProducer());
-        assertEquals(2002, minMaxWinnerAward.getMax().get(2).getPreviousWin());
-        assertEquals(2015, minMaxWinnerAward.getMax().get(2).getFollowingWin());
-        assertEquals(3, minMaxWinnerAward.getMax().size());
     }
 }

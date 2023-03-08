@@ -16,7 +16,6 @@ import java.nio.file.Paths;
 import java.util.stream.Stream;
 
 import static br.com.challenge.texoit.movieaward.enumeration.ErrorCodeEnum.ERROR_MOVIE_READ_FILE;
-import static br.com.challenge.texoit.movieaward.enumeration.ErrorCodeEnum.INFO_SHOWING_SAVED_DATA;
 import static br.com.challenge.texoit.movieaward.enumeration.WinnerEnum.NO;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.util.ObjectUtils.isEmpty;
@@ -41,13 +40,11 @@ public class FileService {
                 .map(line -> line.split(";"))
                 .map(col-> new MovieEntity(getYear(col[0]), col[1], col[2], col[3], getWinner(col)))
                 .forEach(this.movieAwardService::save);
-            log.info(messageHelper.get(INFO_SHOWING_SAVED_DATA));
-            this.movieAwardService.findAll().forEach(movieEntity -> log.info(movieEntity.toString()));
-
         } catch (Exception e) {
             log.error(messageHelper.get(ERROR_MOVIE_READ_FILE, this.filePath, e));
             throw new BusinessException(INTERNAL_SERVER_ERROR, messageHelper.get(ERROR_MOVIE_READ_FILE, this.filePath, e));
         }
+        this.movieAwardService.findAll().forEach(movieEntity -> log.info(movieEntity.toString()));
     }
 
     private Integer getYear(final String value) {

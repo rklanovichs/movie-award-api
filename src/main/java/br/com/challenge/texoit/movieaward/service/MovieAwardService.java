@@ -2,6 +2,7 @@ package br.com.challenge.texoit.movieaward.service;
 
 import br.com.challenge.texoit.movieaward.dto.MaxMovieWinnerAwardDTO;
 import br.com.challenge.texoit.movieaward.dto.MinMovieWinnerAwardDTO;
+import br.com.challenge.texoit.movieaward.dto.MovieDTO;
 import br.com.challenge.texoit.movieaward.dto.MovieWinnersDTO;
 import br.com.challenge.texoit.movieaward.entity.MovieEntity;
 import br.com.challenge.texoit.movieaward.exception.BusinessException;
@@ -18,6 +19,7 @@ import java.util.stream.IntStream;
 
 import static br.com.challenge.texoit.movieaward.enumeration.ErrorCodeEnum.ERROR_MOVIE_FIND;
 import static br.com.challenge.texoit.movieaward.enumeration.ErrorCodeEnum.ERROR_MOVIE_SAVE;
+import static br.com.challenge.texoit.movieaward.enumeration.ErrorCodeEnum.INFO_SHOWING_SAVED_DATA;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @Slf4j
@@ -73,10 +75,27 @@ public class MovieAwardService {
                 }
             }
         }
+
+        final Integer finalMaxInterval = this.getMaxInterval(max);
+        MaxMovieWinnerAwardDTO finalMaxMovie =
+            max.stream().filter(maxMovie -> finalMaxInterval.equals(maxMovie.getInterval())).findFirst().orElse(null);
+        max.clear();
+        max.add(finalMaxMovie);
+
         return MovieWinnersDTO.builder()
                 .min(min)
                 .max(max)
                 .build();
+    }
+
+    private Integer getMaxInterval (final List<MaxMovieWinnerAwardDTO> max) {
+        Integer maxInterval = 0;
+        for (MaxMovieWinnerAwardDTO maxMovieWinnerAwardDTO : max) {
+            if (maxMovieWinnerAwardDTO.getInterval() > maxInterval) {
+                maxInterval = maxMovieWinnerAwardDTO.getInterval();
+            }
+        }
+        return maxInterval;
     }
 
     private Integer getYearMin(final Integer yearMin, final Integer yearMax) {
@@ -106,16 +125,31 @@ public class MovieAwardService {
         return filterList;
     }
 
-    public List<MovieEntity> findAll() {
+    public List<MovieDTO> findAll() {
         try {
-            return movieRepository.findAll();
+            log.info(messageHelper.get(INFO_SHOWING_SAVED_DATA));
+            return buildMovieDTO(movieRepository.findAll());
         } catch (Exception e) {
             log.error(messageHelper.get(ERROR_MOVIE_FIND, e));
             throw new BusinessException(INTERNAL_SERVER_ERROR, messageHelper.get(ERROR_MOVIE_FIND, e));
         }
     }
 
-    public void save (final MovieEntity movieEntity) {
+    private List<MovieDTO> buildMovieDTO(List<MovieEntity> movieList) {
+        List<MovieDTO> movieDTOList = new ArrayList<>();
+        movieList.forEach(movieEntity ->
+            movieDTOList.add(MovieDTO.builder()
+                .id(movieEntity.getId())
+                .producers(movieEntity.getProducers())
+                .studios(movieEntity.getStudios())
+                .title(movieEntity.getTitle())
+                .year(movieEntity.getYear())
+                .winnerEnum(movieEntity.getWinner())
+                .build()));
+        return movieDTOList;
+}
+
+    public void save(final MovieEntity movieEntity) {
         try {
             movieRepository.save(movieEntity);
         } catch (Exception e) {
