@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.IntStream;
 
 import static br.com.challenge.texoit.movieaward.enumeration.ErrorCodeEnum.ERROR_MOVIE_FIND;
 import static br.com.challenge.texoit.movieaward.enumeration.ErrorCodeEnum.ERROR_MOVIE_SAVE;
@@ -85,19 +86,15 @@ public class MovieAwardService {
 
     private List<MovieEntity> filterWinnerMovieList(final List<MovieEntity> movieList) {
         List<MovieEntity> filterList = new ArrayList<>();
-        for (int i = 0; i < movieList.size(); i++) {
-            for (MovieEntity movieEntity : movieList) {
-                if (movieEntity.getProducers().contains(movieList.get(i).getProducers())
-                        && !Objects.equals(movieEntity.getId(), movieList.get(i).getId())) {
-                    if (!filterList.contains(movieList.get(i))) {
-                        filterList.add(movieList.get(i));
-                    }
-                    if (!filterList.contains(movieEntity)) {
-                        filterList.add(movieEntity);
-                    }
-                }
+        IntStream.range(0, movieList.size()).forEach((int i) -> movieList.stream().filter(movieEntity -> movieEntity.getProducers().contains(movieList.get(i).getProducers())
+                && !Objects.equals(movieEntity.getId(), movieList.get(i).getId())).forEachOrdered((MovieEntity movieEntity) -> {
+            if (!filterList.contains(movieList.get(i))) {
+                filterList.add(movieList.get(i));
             }
-        }
+            if (!filterList.contains(movieEntity)) {
+                filterList.add(movieEntity);
+            }
+        }));
         return filterList;
     }
 

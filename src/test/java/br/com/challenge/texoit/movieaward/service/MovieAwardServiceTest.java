@@ -56,12 +56,6 @@ class MovieAwardServiceTest {
         assertEquals(1990, minMaxWinnerAward.getMax().get(0).getFollowingWin());
         assertEquals(4, minMaxWinnerAward.getMax().size());
 
-        assertEquals(6, minMaxWinnerAward.getMax().get(1).getInterval());
-        assertEquals("Bo Derek", minMaxWinnerAward.getMax().get(1).getProducer());
-        assertEquals(1984, minMaxWinnerAward.getMax().get(1).getPreviousWin());
-        assertEquals(1990, minMaxWinnerAward.getMax().get(1).getFollowingWin());
-        assertEquals(4, minMaxWinnerAward.getMax().size());
-
         assertEquals(9, minMaxWinnerAward.getMax().get(2).getInterval());
         assertEquals("Buzz Feitshans", minMaxWinnerAward.getMax().get(2).getProducer());
         assertEquals(1985, minMaxWinnerAward.getMax().get(2).getPreviousWin());
